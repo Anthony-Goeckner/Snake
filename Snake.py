@@ -3,15 +3,15 @@ import pygame.locals as pyg
 import random
 pygame.init()
 
-grid_size = 20
+GRID_SIZE = 20
 # extra 20 pixels added to y value of size so score does not overlap game window
-size = (grid_size*20, (grid_size*20) + 20)
-starting_pos = grid_size / 2	
+SIZE = (GRID_SIZE*20, (GRID_SIZE*20) + 20)
+STARTING_POSITION = GRID_SIZE / 2	
 FPS = 30
-speed = 6
-font = pygame.font.Font('freesansbold.ttf', 20)
-screen = pygame.display.set_mode(size)
-clock = pygame.time.Clock()
+SPEED = 6
+FONT = pygame.font.Font('freesansbold.ttf', 20)
+SCREEN = pygame.display.set_mode(SIZE)
+CLOCK = pygame.time.Clock()
 
 
 class Snake:
@@ -19,10 +19,10 @@ class Snake:
         self.score = 0
         self.turns_remaining = 1  # number of times you can input directions
         self.direction = 'E'  # starting direction: East
-        self.positions = [(starting_pos-3, starting_pos),
-                          (starting_pos-2, starting_pos),
-                          (starting_pos-1, starting_pos),
-                          (starting_pos, starting_pos)]
+        self.positions = [(STARTING_POSITION-3, STARTING_POSITION),
+                          (STARTING_POSITION-2, STARTING_POSITION),
+                          (STARTING_POSITION-1, STARTING_POSITION),
+                          (STARTING_POSITION, STARTING_POSITION)]
         # tells snake which way to move based on direction
         self.change_pos = {'N': (0, -1), 'E': (1, 0), 'S': (0, 1), 'W': (-1, 0)}
         self.prev = None  # holds the most recent tail piece removed when the snake moves
@@ -31,7 +31,7 @@ class Snake:
     def draw(self):
         for pos in self.positions:
             x, y = pos
-            pygame.draw.rect(screen, (255, 255, 255), (x*grid_size, y*grid_size, 20, 20))
+            pygame.draw.rect(SCREEN, (255, 255, 255), (x*GRID_SIZE, y*GRID_SIZE, 20, 20))
 
     # using the directions defined in self.change_pos,
     # adds a new position at the end of self.positions for the new
@@ -76,14 +76,14 @@ class Fruit:
     def make_position(self, snake):
         pos = False
         while not pos:
-            x, y = (random.randint(0, grid_size-1), random.randint(1, grid_size-1))
+            x, y = (random.randint(0, GRID_SIZE-1), random.randint(1, GRID_SIZE-1))
             if (x, y) not in snake.positions:
                 self.position = (x, y)
                 pos = True
 
     def draw(self):
         x, y = self.position
-        pygame.draw.rect(screen, (255, 0, 0), (x*grid_size, y*grid_size, 20, 20))
+        pygame.draw.rect(SCREEN, (255, 0, 0), (x*GRID_SIZE, y*GRID_SIZE, 20, 20))
 
 
 def main():
@@ -97,16 +97,16 @@ def main():
     # game loop
     while not done:
         frame += 1
-        if frame > speed:
+        if frame > SPEED:
             frame = 1
             snake.move()
 
             # check if dead to walls
             x, y = snake.positions[-1]
-            if x < 0 or x > grid_size-1:
+            if x < 0 or x > GRID_SIZE-1:
                 done = True
                 continue
-            if y < 1 or y > grid_size-1:
+            if y < 1 or y > GRID_SIZE-1:
                 done = True
 
             # check if dead to self
@@ -135,25 +135,25 @@ def main():
             snake.change_direction()
 
         # draw things on screen
-        screen.fill((0, 0, 0))
-        pygame.draw.rect(screen, (255, 255, 255), (0, 0, size[1], 20))
+        SCREEN.fill((0, 0, 0))
+        pygame.draw.rect(SCREEN, (255, 255, 255), (0, 0, SIZE[1], 20))
         snake.draw()
         fruit.draw()
 
         # draw score
         score_txt = 'Score: ' + str(snake.score)
-        text = font.render(score_txt, True, (0, 0, 0), (255, 255, 255))
-        screen.blit(text, (0, 0))
+        text = FONT.render(score_txt, True, (0, 0, 0), (255, 255, 255))
+        SCREEN.blit(text, (0, 0))
 
         # draw grid
-        for i in range(0, size[0], 20):
-            pygame.draw.line(screen, (0, 0, 0), (i, 20), (i, size[1]))
-        for i in range(20, size[1], 20):
-            pygame.draw.line(screen, (0, 0, 0), (0, i), (size[0], i))
+        for i in range(0, SIZE[0], 20):
+            pygame.draw.line(SCREEN, (0, 0, 0), (i, 20), (i, SIZE[1]))
+        for i in range(20, SIZE[1], 20):
+            pygame.draw.line(SCREEN, (0, 0, 0), (0, i), (SIZE[0], i))
 
         # updates display and clock.tick caps frames at var FPS
         pygame.display.update()
-        clock.tick(FPS)
+        CLOCK.tick(FPS)
 
     return snake.score
 
